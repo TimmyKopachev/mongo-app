@@ -1,0 +1,4 @@
+custom:
+  db:
+    name: units
+    uri: mongodb://localhost:27017
