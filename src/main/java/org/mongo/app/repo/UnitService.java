@@ -21,6 +21,14 @@ public class UnitService {
     private final MongoTemplate mongoTemplate;
     private final UnitRepository unitRepository;
 
+    public List<Unit> findUnitsByEmployeeName(String name) {
+        Query query = new Query();
+
+        query.addCriteria(Criteria.where("employees.name").is(name));
+
+        return mongoTemplate.find(query, Unit.class);
+    }
+
     public long updateEmployeesByUnit(String unitName) {
         BulkOperations bulkOperations = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Unit.class);
 
@@ -51,7 +59,7 @@ public class UnitService {
 
         Employee employee1 = new Employee();
         employee1.setAge(26);
-        employee1.setFullName("Dzmitry Kapachou");
+        employee1.setName("Dzmitry Kapachou");
         employee1.setPosition("Software engineer");
         employee1.setEmail("dzmitry.kapachou@company.com");
 

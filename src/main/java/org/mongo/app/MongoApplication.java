@@ -17,10 +17,7 @@ public class MongoApplication {
     private UnitService unitService;
 
     public static void main(String[] args) {
-        new SpringApplicationBuilder()
-                .sources(MongoApplication.class)
-                .bannerMode(Banner.Mode.OFF)
-                .run(args);
+        new SpringApplicationBuilder().sources(MongoApplication.class).bannerMode(Banner.Mode.OFF).run(args);
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -31,12 +28,7 @@ public class MongoApplication {
         log.info("====add dummy units to Mongo====");
         unitService.createDummyUnit();
 
-        log.info("====Show up units with no employees from Mongo====");
-        unitService.getUnitsWithoutEmployees()
-                .forEach(unit -> log.info("{}", unit));
-
-        log.info("====Update employees by Unit name");
-        String unitName = "development";
-        log.info("Updated records {} for unit: {}", unitService.updateEmployeesByUnit(unitName), unitName);
+        System.out.println("===================");
+        System.out.println(unitService.findUnitsByEmployeeName("Dzmitry Kapachou"));
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-@Document
+@Document(collection = "my-units")
 public class Unit {
 
     @Id
