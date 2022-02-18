@@ -13,7 +13,6 @@ public class MongoExceptionHandler {
     @AfterThrowing(pointcut = "execution(* org.mongo.app.repo.UnitService.*(..))", throwing = "ex")
     public void handleMongoException(Exception ex) {
         log.warn("===Mongo thrown an exception===");
-        log.warn("Unit with the name provided is already existent");
     }
 
 }

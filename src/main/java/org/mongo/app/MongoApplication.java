@@ -26,12 +26,17 @@ public class MongoApplication {
     @EventListener(ApplicationReadyEvent.class)
     public void executeMockCode() {
         log.info("====clean up Units from Mongo====");
-        //log.info("removed {} records", unitService.cleanup());
+        log.info("removed {} records", unitService.cleanup());
 
         log.info("====add dummy units to Mongo====");
         unitService.createDummyUnit();
 
+        log.info("====Show up units with no employees from Mongo====");
         unitService.getUnitsWithoutEmployees()
-                .forEach(unit -> log.info("unit from mongo {}", unit));
+                .forEach(unit -> log.info("{}", unit));
+
+        log.info("====Update employees by Unit name");
+        String unitName = "development";
+        log.info("Updated records {} for unit: {}", unitService.updateEmployeesByUnit(unitName), unitName);
     }
 }

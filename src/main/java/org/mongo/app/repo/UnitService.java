@@ -3,9 +3,11 @@ package org.mongo.app.repo;
 import lombok.AllArgsConstructor;
 import org.mongo.app.model.Employee;
 import org.mongo.app.model.Unit;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +21,20 @@ public class UnitService {
     private final MongoTemplate mongoTemplate;
     private final UnitRepository unitRepository;
 
+    public long updateEmployeesByUnit(String unitName) {
+        BulkOperations bulkOperations = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Unit.class);
+
+        Query query = new Query();
+        query.addCriteria(Criteria.where("name").is(unitName));
+
+        Update update = new Update();
+        update.set("employees.$[e].position", "Updated Position")
+                .filterArray("e.position", "Software engineer");
+
+        bulkOperations.updateMulti(query, update);
+        return bulkOperations.execute().getModifiedCount();
+    }
+
     public List<Unit> getUnitsWithoutEmployees() {
         Query query = new Query();
         query.addCriteria(Criteria.where("employees").exists(false));
@@ -28,7 +44,6 @@ public class UnitService {
     public int cleanup() {
         return mongoTemplate.findAllAndRemove(new Query(), Unit.class).size();
     }
-
 
     public void createDummyUnit() {
         Unit unit1 = new Unit();
