@@ -1,16 +1,20 @@
 package org.mongo.app;
 
-import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.mongo.app.repo.UnitService;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 
+@Slf4j
 @SpringBootApplication
 public class MongoApplication {
+
+    @Autowired
+    private UnitService unitService;
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()
@@ -19,18 +23,15 @@ public class MongoApplication {
                 .run(args);
     }
 
-    @Component
-    @AllArgsConstructor
-    class CustomApplicationRunner implements ApplicationRunner {
+    @EventListener(ApplicationReadyEvent.class)
+    public void executeMockCode() {
+        log.info("====clean up Units from Mongo====");
+        //log.info("removed {} records", unitService.cleanup());
 
-        final UnitService unitService;
+        log.info("====add dummy units to Mongo====");
+        unitService.createDummyUnit();
 
-        @Override
-        public void run(ApplicationArguments args) {
-            unitService.createDummyUnit();
-
-            unitService.getUnitsByEmployee().forEach(System.out::println);
-        }
+        unitService.getUnitsWithoutEmployees()
+                .forEach(unit -> log.info("unit from mongo {}", unit));
     }
-
 }

@@ -19,11 +19,16 @@ public class UnitService {
     private final MongoTemplate mongoTemplate;
     private final UnitRepository unitRepository;
 
-    public List<Unit> getUnitsByEmployee() {
+    public List<Unit> getUnitsWithoutEmployees() {
         Query query = new Query();
         query.addCriteria(Criteria.where("employees").exists(false));
         return mongoTemplate.find(query, Unit.class);
     }
+
+    public int cleanup() {
+        return mongoTemplate.findAllAndRemove(new Query(), Unit.class).size();
+    }
+
 
     public void createDummyUnit() {
         Unit unit1 = new Unit();

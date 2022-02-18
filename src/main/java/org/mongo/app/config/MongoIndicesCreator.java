@@ -32,7 +32,7 @@ public class MongoIndicesCreator implements ApplicationRunner {
 
     private void createUnitIndices() {
         mongoOperations.indexOps(Unit.class)
-                .ensureIndex(new Index().on("name", Sort.Direction.DESC));
+                .ensureIndex(new Index().on("name", Sort.Direction.DESC).unique());
     }
 
 }
